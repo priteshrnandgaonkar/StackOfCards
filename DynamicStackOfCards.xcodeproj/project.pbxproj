@@ -14,6 +14,8 @@
 		84B7CD631D8B241600AD45F6 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 84B7CD611D8B241600AD45F6 /* LaunchScreen.storyboard */; };
 		84B7CD6E1D8B241600AD45F6 /* DynamicStackOfCardsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84B7CD6D1D8B241600AD45F6 /* DynamicStackOfCardsTests.swift */; };
 		84B7CD791D8B241600AD45F6 /* DynamicStackOfCardsUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84B7CD781D8B241600AD45F6 /* DynamicStackOfCardsUITests.swift */; };
+		84B7CD871D8B278300AD45F6 /* CardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84B7CD861D8B278300AD45F6 /* CardView.swift */; };
+		84F31DCC1D8BE92D00CDC51D /* CardLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84F31DCB1D8BE92D00CDC51D /* CardLayout.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -47,6 +49,8 @@
 		84B7CD741D8B241600AD45F6 /* DynamicStackOfCardsUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DynamicStackOfCardsUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		84B7CD781D8B241600AD45F6 /* DynamicStackOfCardsUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DynamicStackOfCardsUITests.swift; sourceTree = "<group>"; };
 		84B7CD7A1D8B241600AD45F6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		84B7CD861D8B278300AD45F6 /* CardView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardView.swift; sourceTree = "<group>"; };
+		84F31DCB1D8BE92D00CDC51D /* CardLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardLayout.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -103,6 +107,8 @@
 				84B7CD5F1D8B241600AD45F6 /* Assets.xcassets */,
 				84B7CD611D8B241600AD45F6 /* LaunchScreen.storyboard */,
 				84B7CD641D8B241600AD45F6 /* Info.plist */,
+				84B7CD861D8B278300AD45F6 /* CardView.swift */,
+				84F31DCB1D8BE92D00CDC51D /* CardLayout.swift */,
 			);
 			path = DynamicStackOfCards;
 			sourceTree = "<group>";
@@ -260,7 +266,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				84B7CD5B1D8B241600AD45F6 /* ViewController.swift in Sources */,
+				84B7CD871D8B278300AD45F6 /* CardView.swift in Sources */,
 				84B7CD591D8B241600AD45F6 /* AppDelegate.swift in Sources */,
+				84F31DCC1D8BE92D00CDC51D /* CardLayout.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -361,6 +369,7 @@
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -403,6 +412,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};
@@ -505,6 +515,7 @@
 				84B7CD7F1D8B241600AD45F6 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		84B7CD801D8B241600AD45F6 /* Build configuration list for PBXNativeTarget "DynamicStackOfCardsTests" */ = {
 			isa = XCConfigurationList;
@@ -513,6 +524,7 @@
 				84B7CD821D8B241600AD45F6 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		84B7CD831D8B241600AD45F6 /* Build configuration list for PBXNativeTarget "DynamicStackOfCardsUITests" */ = {
 			isa = XCConfigurationList;
@@ -521,6 +533,7 @@
 				84B7CD851D8B241600AD45F6 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
