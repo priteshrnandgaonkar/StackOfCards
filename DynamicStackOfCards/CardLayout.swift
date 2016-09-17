@@ -20,67 +20,79 @@ protocol CardLayoutDelegate {
     var fractionToMove: Float { get }
     var cardState: CardState { get }
     var cardOffset: Float { get }
-    var cardHeight: Float{ get }
+    var cardHeight: Float { get }
+    var defaultCardsCollectionHeight:Float { get }
+    var expandedHeight:Float { get }
 }
 
 class CardLayout: UICollectionViewFlowLayout {
 
     var delegate: CardLayoutDelegate!
-    
+    var contentHeight: CGFloat = 0.0
 
     var cachedAttributes = [UICollectionViewLayoutAttributes]()
     
+    override var collectionViewContentSize: CGSize {
+        let collection = collectionView!
+        let width = collection.bounds.size.width
+        let height = contentHeight
+        
+        return CGSize(width: width, height: height)
+    }
+    
     override func prepare() {
         cachedAttributes.removeAll()
+        contentHeight = delegate.cardState == .Expanded ? 0.0 : CGFloat(delegate.defaultCardsCollectionHeight + delegate.fractionToMove)
         
-        print("Prepare called with state \(delegate.cardState)")
         guard let numberOfItems = collectionView?.numberOfItems(inSection: 0) else {
             return
         }
-                
+        
         for index in 0..<numberOfItems {
             let layout = UICollectionViewLayoutAttributes()
-            
-            layout.frame = frameFor(index: index, cardState: delegate!.cardState)
-//            frame.origin.y = CGFloat((8 * (index + 1)) + (cardHeight * index))
-//            layout.frame = frame
+            layout.indexPath = IndexPath(item: index, section: 0)
+            layout.frame = frameFor(index: index, cardState: delegate!.cardState, translation: delegate.fractionToMove)
+            if delegate.cardState == .Expanded {
+                contentHeight += 8 + layout.frame.size.height
+            }
             layout.zIndex = index
             cachedAttributes.append(layout)
         }
+        print("cached attributes \(cachedAttributes)")
     }
     
     override func layoutAttributesForElements(in rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
-        print("Attributes for rect called")
-
         guard let array = super.layoutAttributesForElements(in: rect) else {
             fatalError()
         }
         
         for attribute in array {
             let frame = cachedAttributes[attribute.indexPath.item].frame
-            print("frame for index \(attribute.indexPath.item) and frame \(frame)")
             attribute.frame = frame
         }
         
         return array
     }
-   
-    func frameFor(index: Int, cardState: CardState) -> CGRect {
+    
+    override func layoutAttributesForItem(at indexPath: IndexPath) -> UICollectionViewLayoutAttributes? {
+        return cachedAttributes[indexPath.item]
+    }
+    
+    func frameFor(index: Int, cardState: CardState, translation: Float) -> CGRect {
         var frame = CGRect(origin: CGPoint(x: 8, y:0), size: CGSize(width: UIScreen.main.bounds.width - 16, height: 200))
         var frameOrigin = frame.origin
-        
-        print("fractionto move \(delegate.fractionToMove) for index \(index)")
-
         switch cardState {
         case .Expanded:
             let val = (delegate.cardHeight * Float(index))
-            frameOrigin.y = CGFloat(Float(8 * (index + 1)) + val)
+            frameOrigin.y = CGFloat(Float(8 * (index)) + val)
             
         case .InTransit:
             if index > 0 {
                 
-                let val = CGFloat(8 + (delegate.cardOffset * Float(index)) + delegate.fractionToMove)
-                print("intransit value \(val)")
+                let collapsedY = 8.0 + (delegate.cardOffset * Float(index))
+                let finalDistToMove = Swift.abs(((8.0 + delegate.cardHeight) * Float(index)) - collapsedY)
+                let fract = (finalDistToMove * translation)/(delegate.expandedHeight - delegate.defaultCardsCollectionHeight)
+                let val = CGFloat(8 + (delegate.cardOffset * Float(index)) + fract)
                 frameOrigin.y = val
             }
             

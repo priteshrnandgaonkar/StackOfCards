@@ -20,7 +20,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="N46-y7-wgl">
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="200" id="bbB-6b-r45"/>
                                 </constraints>
@@ -45,6 +45,7 @@
                                                 </label>
                                             </subviews>
                                         </view>
+                                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                         <constraints>
                                             <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="Bxa-7c-p2M" secondAttribute="bottom" id="2KV-PW-WvN"/>
                                             <constraint firstItem="Bxa-7c-p2M" firstAttribute="leading" secondItem="I6L-2b-Cba" secondAttribute="leading" id="Blc-lP-bpG"/>
@@ -61,22 +62,14 @@
                                 </cells>
                                 <connections>
                                     <outlet property="dataSource" destination="BYZ-38-t0r" id="Qz4-hQ-Ex5"/>
+                                    <outlet property="delegate" destination="BYZ-38-t0r" id="2w2-P1-zeA"/>
                                 </connections>
                             </collectionView>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kBQ-yw-8Ud">
-                                <state key="normal" title="Invalidate"/>
-                                <connections>
-                                    <action selector="tappedOnInvalidate:" destination="BYZ-38-t0r" eventType="touchUpInside" id="eXn-W1-qZN"/>
-                                </connections>
-                            </button>
                         </subviews>
                         <color key="backgroundColor" red="0.0" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
                             <constraint firstAttribute="trailing" secondItem="N46-y7-wgl" secondAttribute="trailing" id="5td-rE-0s8"/>
-                            <constraint firstItem="kBQ-yw-8Ud" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" constant="155" id="7US-JP-Rc7"/>
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="N46-y7-wgl" secondAttribute="bottom" id="7fF-e7-GOG"/>
-                            <constraint firstItem="kBQ-yw-8Ud" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" constant="9" id="JcC-7x-fxh"/>
-                            <constraint firstAttribute="trailing" secondItem="kBQ-yw-8Ud" secondAttribute="trailing" constant="142" id="bUM-MK-5Q7"/>
                             <constraint firstItem="N46-y7-wgl" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="p16-eh-3Af"/>
                         </constraints>
                     </view>

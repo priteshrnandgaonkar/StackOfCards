@@ -17,13 +17,11 @@ class ViewController: UIViewController, CardLayoutDelegate {
     let expandedHeight:Float = 500;
     let cardHeight: Float = 200
     
+    var panGesture: UIPanGestureRecognizer = UIPanGestureRecognizer()
+    
     @IBOutlet weak var cardsCollectionView: UICollectionView!
     
     @IBOutlet weak var cardsCollectionViewHeight: NSLayoutConstraint!
-    
-    @IBAction func tappedOnInvalidate(_ sender: UIButton) {
-        
-    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -32,13 +30,20 @@ class ViewController: UIViewController, CardLayoutDelegate {
             cardLayout.delegate = self
         }
             // Do any additional setup after loading the view, typically from a nib.
-        let gesture = UIPanGestureRecognizer(target: self, action:#selector(self.CardsPanned))
-        cardsCollectionView.addGestureRecognizer(gesture)
+        panGesture = UIPanGestureRecognizer(target: self, action:#selector(self.CardsPanned))
+        cardsCollectionView.addGestureRecognizer(panGesture)
     }
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        if scrollView.contentOffset.y < 0 {
+            panGesture.isEnabled = true
+            scrollView.isScrollEnabled = false
+        }
     }
     
     func CardsPanned(panGesture: UIPanGestureRecognizer) {
@@ -56,7 +61,7 @@ class ViewController: UIViewController, CardLayoutDelegate {
             cardsCollectionViewHeight.constant = Swift.max(cardsCollectionViewHeight.constant, CGFloat(defaultCardsCollectionHeight))
 
             cardState = .InTransit
-            fractionToMove = Float(cardsCollectionViewHeight.constant - CGFloat(defaultCardsCollectionHeight))*((expandedHeight - defaultCardsCollectionHeight)/cardHeight)
+            fractionToMove = Float(cardsCollectionViewHeight.constant - CGFloat(defaultCardsCollectionHeight))
             
              cardsCollectionView.collectionViewLayout.invalidateLayout()
             view.layoutIfNeeded()
@@ -68,38 +73,43 @@ class ViewController: UIViewController, CardLayoutDelegate {
             if cardsCollectionViewHeight.constant > CGFloat(defaultCardsCollectionHeight + 50) {
                 cardsCollectionViewHeight.constant = CGFloat(expandedHeight)
                 cardState = .Expanded
-
+                panGesture.isEnabled = false
+                cardsCollectionView.isScrollEnabled = true
             }
             else {
                 cardsCollectionViewHeight.constant = CGFloat(defaultCardsCollectionHeight)
                 cardState = .Collapsed
+                panGesture.isEnabled = true
             }
+            cardsCollectionView.isScrollEnabled = !panGesture.isEnabled
             cardsCollectionView.collectionViewLayout.invalidateLayout()
             view.layoutIfNeeded()
-            
+            print(cardsCollectionView.contentSize)
             
         default:
             break
         }
         panGesture.setTranslation(CGPoint.zero, in: view)
-       
-
-        
     }
 }
 
 
 extension ViewController: UICollectionViewDataSource, UICollectionViewDelegate {
+    
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return 1
+    }
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 3
+        return 4
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cardView = collectionView.dequeueReusableCell(withReuseIdentifier: "CardReuseID", for: indexPath) as? CardView else {
             fatalError("Failed to downcast to CardView")
         }
-        
-        cardView.header.text = "\(indexPath.item)"
+        print("dequeu \(indexPath.item)")
+        cardView.header.text = "\(indexPath.row)"
         
         return cardView
     }
