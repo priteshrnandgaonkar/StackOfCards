@@ -14,15 +14,17 @@ class ViewController: UIViewController, CardLayoutDelegate {
     var cardState: CardState = .Collapsed
     var cardOffset: Float = 40
     let defaultCardsCollectionHeight:Float = 200
-    let expandedHeight:Float = 500;
+    let expandedHeight:Float = 500
     let cardHeight: Float = 200
+    let downwardThreshold:Float = 50
+    let upwardThreshold:Float = 50
     
     var panGesture: UIPanGestureRecognizer = UIPanGestureRecognizer()
     
     @IBOutlet weak var cardsCollectionView: UICollectionView!
     
     @IBOutlet weak var cardsCollectionViewHeight: NSLayoutConstraint!
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -32,6 +34,7 @@ class ViewController: UIViewController, CardLayoutDelegate {
             // Do any additional setup after loading the view, typically from a nib.
         panGesture = UIPanGestureRecognizer(target: self, action:#selector(self.CardsPanned))
         cardsCollectionView.addGestureRecognizer(panGesture)
+        cardsCollectionView.isScrollEnabled = false
     }
     
     override func didReceiveMemoryWarning() {
@@ -49,9 +52,8 @@ class ViewController: UIViewController, CardLayoutDelegate {
     func CardsPanned(panGesture: UIPanGestureRecognizer) {
         
         let translation = panGesture.translation(in: view)
-
-        print(translation.y)
-
+        cardsCollectionView.collectionViewLayout.invalidateLayout()
+        
         switch panGesture.state {
         case .changed:
 
@@ -62,19 +64,21 @@ class ViewController: UIViewController, CardLayoutDelegate {
 
             cardState = .InTransit
             fractionToMove = Float(cardsCollectionViewHeight.constant - CGFloat(defaultCardsCollectionHeight))
+            cardsCollectionView.isScrollEnabled = false
             
-             cardsCollectionView.collectionViewLayout.invalidateLayout()
-            view.layoutIfNeeded()
-
+            cardsCollectionView.performBatchUpdates({
+                self.cardsCollectionView.collectionViewLayout.invalidateLayout()
+                self.view.layoutIfNeeded()
+                
+                }, completion: nil)
+            
         case .cancelled:
             fallthrough
         case .ended:
-            
-            if cardsCollectionViewHeight.constant > CGFloat(defaultCardsCollectionHeight + 50) {
+            if cardsCollectionViewHeight.constant > CGFloat(defaultCardsCollectionHeight + upwardThreshold) {
                 cardsCollectionViewHeight.constant = CGFloat(expandedHeight)
                 cardState = .Expanded
                 panGesture.isEnabled = false
-                cardsCollectionView.isScrollEnabled = true
             }
             else {
                 cardsCollectionViewHeight.constant = CGFloat(defaultCardsCollectionHeight)
@@ -82,13 +86,17 @@ class ViewController: UIViewController, CardLayoutDelegate {
                 panGesture.isEnabled = true
             }
             cardsCollectionView.isScrollEnabled = !panGesture.isEnabled
-            cardsCollectionView.collectionViewLayout.invalidateLayout()
-            view.layoutIfNeeded()
-            print(cardsCollectionView.contentSize)
-            
+
+            UIView.animate(withDuration: 0.3, animations: {
+                self.cardsCollectionView.collectionViewLayout.invalidateLayout()
+                self.view.layoutIfNeeded()
+            })
+
         default:
             break
         }
+        
+
         panGesture.setTranslation(CGPoint.zero, in: view)
     }
 }
@@ -101,14 +109,13 @@ extension ViewController: UICollectionViewDataSource, UICollectionViewDelegate {
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 4
+        return 30
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cardView = collectionView.dequeueReusableCell(withReuseIdentifier: "CardReuseID", for: indexPath) as? CardView else {
             fatalError("Failed to downcast to CardView")
         }
-        print("dequeu \(indexPath.item)")
         cardView.header.text = "\(indexPath.row)"
         
         return cardView

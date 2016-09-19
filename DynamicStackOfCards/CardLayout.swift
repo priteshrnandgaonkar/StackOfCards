@@ -25,7 +25,7 @@ protocol CardLayoutDelegate {
     var expandedHeight:Float { get }
 }
 
-class CardLayout: UICollectionViewFlowLayout {
+class CardLayout: UICollectionViewLayout {
 
     var delegate: CardLayoutDelegate!
     var contentHeight: CGFloat = 0.0
@@ -49,29 +49,46 @@ class CardLayout: UICollectionViewFlowLayout {
         }
         
         for index in 0..<numberOfItems {
-            let layout = UICollectionViewLayoutAttributes()
-            layout.indexPath = IndexPath(item: index, section: 0)
+            let layout = UICollectionViewLayoutAttributes(forCellWith: IndexPath(row: index, section: 0))
             layout.frame = frameFor(index: index, cardState: delegate!.cardState, translation: delegate.fractionToMove)
             if delegate.cardState == .Expanded {
                 contentHeight += 8 + layout.frame.size.height
             }
             layout.zIndex = index
+            layout.isHidden = false
+            
             cachedAttributes.append(layout)
         }
-        print("cached attributes \(cachedAttributes)")
     }
     
     override func layoutAttributesForElements(in rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
-        guard let array = super.layoutAttributesForElements(in: rect) else {
-            fatalError()
-        }
+//        guard let array = super.layoutAttributesForElements(in: rect) else {
+//            fatalError()
+//        }
+//        
+//        for attribute in array {
+//            let frame = cachedAttributes[attribute.indexPath.row].frame
+//            attribute.frame = frame
+//
+//        }
+//
+//        return array
+
+
+        var layoutAttributes = [UICollectionViewLayoutAttributes]()
         
-        for attribute in array {
-            let frame = cachedAttributes[attribute.indexPath.item].frame
-            attribute.frame = frame
+        for attributes in cachedAttributes {
+            if attributes.frame.intersects(rect) {
+//                layoutAttributes.append(attributes)
+                layoutAttributes.append(cachedAttributes[attributes.indexPath.item])
+            }
+
         }
-        
-        return array
+        return layoutAttributes
+    }
+    
+    override func shouldInvalidateLayout(forBoundsChange newBounds: CGRect) -> Bool {
+        return true
     }
     
     override func layoutAttributesForItem(at indexPath: IndexPath) -> UICollectionViewLayoutAttributes? {
@@ -104,4 +121,5 @@ class CardLayout: UICollectionViewFlowLayout {
         frame.origin = frameOrigin
         return frame
     }
+
 }
