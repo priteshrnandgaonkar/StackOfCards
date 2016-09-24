@@ -26,8 +26,8 @@ public struct Configuration {
 @objc public protocol CardsManagerDelegate {
     
     @objc optional func tappedOnCardsStack(cardsCollectionView: UICollectionView)
-    @objc optional func collectionView(_ cardsCollectionView: UICollectionView, didSelectItemAt indexPath: IndexPath)
-    @objc optional func collectionView(_ cardsCollectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath)
+    @objc optional func cardsCollectionView(_ cardsCollectionView: UICollectionView, didSelectItemAt indexPath: IndexPath)
+    @objc optional func cardsCollectionView(_ cardsCollectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath)
 }
 
 public class CardsStack {

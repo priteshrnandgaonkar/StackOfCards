@@ -209,19 +209,17 @@ extension CardsManager: UICollectionViewDelegate {
     
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
 
-            if scrollView.contentOffset.y < 0 {
+            if scrollView.contentOffset.y < -10 {
                 panGesture.isEnabled = true
                 scrollView.isScrollEnabled = false
             }
     }
     
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        print("CollectionView Did Select")
-        delegate?.collectionView?(collectionView, didSelectItemAt: indexPath)
+        delegate?.cardsCollectionView?(collectionView, didSelectItemAt: indexPath)
     }
     
     public func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        print("CollectionView WIll Display")
-        delegate?.collectionView?(collectionView, willDisplay: cell, forItemAt: indexPath)
+        delegate?.cardsCollectionView?(collectionView, willDisplay: cell, forItemAt: indexPath)
     }
 }

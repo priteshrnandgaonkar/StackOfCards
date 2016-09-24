@@ -23,7 +23,6 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        cardsCollectionView.delegate = self
 //        manager = CardsManager(cardState: cardState, configuration: configuration, collectionView: cardsCollectionView, heightConstraint: cardsCollectionViewHeight)
         manager = CardsStack(cardsState: cardState, configuration: configuration, collectionView: cardsCollectionView, collectionViewHeight: cardsCollectionViewHeight)
         manager.delegate = self
@@ -35,12 +34,21 @@ class ViewController: UIViewController {
     }
 }
 
-extension ViewController: UICollectionViewDataSource, UICollectionViewDelegate, CardsManagerDelegate {
+extension ViewController: UICollectionViewDataSource, CardsManagerDelegate {
     
     func tappedOnCardsStack(cardsCollectionView: UICollectionView) {
         manager.updateView(with: .Expanded)
     }
 
+    func cardsCollectionView(_ cardsCollectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        print("Cards didSelect")
+    }
+    
+    func cardsCollectionView(_ cardsCollectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        print("Cards WillDisplay")
+    }
+
+    
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1
     }
@@ -56,10 +64,6 @@ extension ViewController: UICollectionViewDataSource, UICollectionViewDelegate, 
         cardView.header.text = "\(indexPath.row)"
         
         return cardView
-    }
-    
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        print("In ViewController")
     }
 }
 
