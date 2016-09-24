@@ -10,9 +10,9 @@ import UIKit
 
 class ViewController: UIViewController {
 
-    var cardState: CardState = .Expanded
+    var cardState: CardsPosition = .Expanded
     var configuration = Configuration(cardOffset: 40, collapsedHeight: 200, expandedHeight: 500, cardHeight: 200, downwardThreshold: 20, upwardThreshold: 20)
-    var manager: CardsManager = CardsManager()
+    var manager: CardsStack = CardsStack()
     var previousTranslation:CGFloat = 0
     
     var panGesture: UIPanGestureRecognizer = UIPanGestureRecognizer()
@@ -24,7 +24,8 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         cardsCollectionView.delegate = self
-        manager = CardsManager(cardState: cardState, configuration: configuration, collectionView: cardsCollectionView, heightConstraint: cardsCollectionViewHeight)
+//        manager = CardsManager(cardState: cardState, configuration: configuration, collectionView: cardsCollectionView, heightConstraint: cardsCollectionViewHeight)
+        manager = CardsStack(cardsState: cardState, configuration: configuration, collectionView: cardsCollectionView, collectionViewHeight: cardsCollectionViewHeight)
         manager.delegate = self
     }
     
@@ -37,8 +38,7 @@ class ViewController: UIViewController {
 extension ViewController: UICollectionViewDataSource, UICollectionViewDelegate, CardsManagerDelegate {
     
     func tappedOnCardsStack(cardsCollectionView: UICollectionView) {
-        manager.cardState = .InTransit
-        manager.updateView()
+        manager.updateView(with: .Expanded)
     }
 
     func numberOfSections(in collectionView: UICollectionView) -> Int {
