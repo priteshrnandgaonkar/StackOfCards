@@ -9,28 +9,43 @@
 import Foundation
 import UIKit
 
-struct Configuration {
-    let cardOffset: Float
-    let collapsedHeight:Float
-    let expandedHeight:Float
-    let cardHeight: Float
-    let downwardThreshold:Float
-    let upwardThreshold:Float
+internal enum CardState {
+    case Expanded
+    case InTransit
+    case Collapsed
 }
 
-class CardsManager: NSObject, CardLayoutDelegate {
+internal class CardsManager: NSObject, CardLayoutDelegate {
     
     var fractionToMove:Float = 0
-    var cardState: CardState
+    var cardState: CardState {
+        didSet {
+            print("In did set")
+            switch cardState {
+            case .InTransit:
+                tapGesture.isEnabled = false
+                
+            case .Collapsed:
+                tapGesture.isEnabled = true
+                
+            case .Expanded:
+                tapGesture.isEnabled = false
+            }
+        }
+    }
     var configuration: Configuration
     
+    weak var delegate: CardsManagerDelegate?
     weak var collectionView: UICollectionView?
     weak var cardsCollectionViewHeight: NSLayoutConstraint?
 
-    var panGesture: UIPanGestureRecognizer = UIPanGestureRecognizer()
+    var panGesture = UIPanGestureRecognizer()
+    var tapGesture = UITapGestureRecognizer()
+    
     var previousTranslation: CGFloat = 0
 
     convenience override init() {
+        
         let configuration = Configuration(cardOffset: 40, collapsedHeight: 200, expandedHeight: 500, cardHeight: 200, downwardThreshold: 20, upwardThreshold: 20)
         
         self.init(cardState: .Collapsed, configuration: configuration, collectionView: nil, heightConstraint: nil)
@@ -49,12 +64,27 @@ class CardsManager: NSObject, CardLayoutDelegate {
         if let cardLayout = cardsView.collectionViewLayout as? CardLayout {
             cardLayout.delegate = self
         }
-        panGesture = UIPanGestureRecognizer(target: self, action:#selector(self.cardsPanned))
+        panGesture = UIPanGestureRecognizer(target: self, action:#selector(self.pannedCard))
+        tapGesture = UITapGestureRecognizer(target: self, action: #selector(self.tappedCard))
         cardsView.addGestureRecognizer(panGesture)
-        cardsView.isScrollEnabled = false
+        cardsView.addGestureRecognizer(tapGesture)
+        panGesture.isEnabled = cardState == .Collapsed
+        tapGesture.isEnabled = cardState == .Collapsed
     }
     
-    func cardsPanned(panGesture: UIPanGestureRecognizer) {
+    func tappedCard(tapGesture: UITapGestureRecognizer) {
+        print("Tapped")
+        guard let cardsCollectionView = collectionView else {
+            return
+        }
+        delegate?.tappedOnCardsStack?(cardsCollectionView: cardsCollectionView)
+    }
+    
+    private func testing() {
+        print("TEST")
+    }
+    
+    func pannedCard(panGesture: UIPanGestureRecognizer) {
         guard let collectionView = self.collectionView else {
             return
         }
@@ -68,8 +98,6 @@ class CardsManager: NSObject, CardLayoutDelegate {
             
             switch panGesture.state {
             case .changed:
-                
-                print("CHANGED")
                 heightConstraint.constant -= distanceMoved
                 
                 heightConstraint.constant = Swift.min(heightConstraint.constant, CGFloat(self.configuration.expandedHeight))
@@ -89,8 +117,6 @@ class CardsManager: NSObject, CardLayoutDelegate {
             case .cancelled:
                 fallthrough
             case .ended:
-                
-                print("Distance Moved \(self.previousTranslation)")
                 
                 if self.previousTranslation < 0 {
                     if heightConstraint.constant > CGFloat(self.configuration.collapsedHeight + self.configuration.upwardThreshold) {
@@ -132,15 +158,53 @@ class CardsManager: NSObject, CardLayoutDelegate {
             self.previousTranslation = translation.y
             self.panGesture.setTranslation(CGPoint.zero, in: self.collectionView?.superview)
         }
+    
+    func updateView() {
+        
+        var ht:Float = 0.0
+        
+        switch cardState {
+        case .Collapsed:
+            ht = configuration.collapsedHeight
+            
+        case .Expanded:
+            ht = configuration.expandedHeight
+        default:
+            print("Returned")
+            return
+        }
+        DispatchQueue.main.async { [weak self] in
+            
+            guard let weakSelf = self else {
+                return
+            }
+            weakSelf.cardsCollectionViewHeight?.constant = CGFloat(ht)
+            
+            UIView.animate(withDuration: 0.3, animations: {
+                weakSelf.collectionView?.collectionViewLayout.invalidateLayout()
+                weakSelf.collectionView?.superview?.layoutIfNeeded()
+            })
+        }
+    }
 }
 
 extension CardsManager: UICollectionViewDelegate {
     
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+    public func scrollViewDidScroll(_ scrollView: UIScrollView) {
 
             if scrollView.contentOffset.y < 0 {
                 panGesture.isEnabled = true
                 scrollView.isScrollEnabled = false
             }
+    }
+    
+    public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        print("CollectionView Did Select")
+        delegate?.collectionView?(collectionView, didSelectItemAt: indexPath)
+    }
+    
+    public func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        print("CollectionView WIll Display")
+        delegate?.collectionView?(collectionView, willDisplay: cell, forItemAt: indexPath)
     }
 }

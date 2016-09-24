@@ -10,7 +10,7 @@ import UIKit
 
 class ViewController: UIViewController {
 
-    var cardState: CardState = .Collapsed
+    var cardState: CardState = .Expanded
     var configuration = Configuration(cardOffset: 40, collapsedHeight: 200, expandedHeight: 500, cardHeight: 200, downwardThreshold: 20, upwardThreshold: 20)
     var manager: CardsManager = CardsManager()
     var previousTranslation:CGFloat = 0
@@ -24,7 +24,8 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         cardsCollectionView.delegate = self
-        manager = CardsManager(cardState: cardState, configuration: configuration, collectionView: cardsCollectionView, heightConstraint: cardsCollectionViewHeight);
+        manager = CardsManager(cardState: cardState, configuration: configuration, collectionView: cardsCollectionView, heightConstraint: cardsCollectionViewHeight)
+        manager.delegate = self
     }
     
     override func didReceiveMemoryWarning() {
@@ -33,8 +34,13 @@ class ViewController: UIViewController {
     }
 }
 
-extension ViewController: UICollectionViewDataSource, UICollectionViewDelegate {
+extension ViewController: UICollectionViewDataSource, UICollectionViewDelegate, CardsManagerDelegate {
     
+    func tappedOnCardsStack(cardsCollectionView: UICollectionView) {
+        manager.cardState = .InTransit
+        manager.updateView()
+    }
+
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1
     }

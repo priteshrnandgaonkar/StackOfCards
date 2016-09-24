@@ -22,7 +22,7 @@
                             <collectionView multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="N46-y7-wgl">
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="200" id="bbB-6b-r45"/>
+                                    <constraint firstAttribute="height" constant="500" id="bbB-6b-r45"/>
                                 </constraints>
                                 <collectionViewLayout key="collectionViewLayout" id="1mF-t6-JYI" customClass="CardLayout" customModule="DynamicStackOfCards" customModuleProvider="target"/>
                                 <cells>

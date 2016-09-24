@@ -9,13 +9,6 @@
 import Foundation
 import UIKit
 
-enum CardState {
-    case Expanded 
-    case InTransit
-    case Collapsed
-}
-
-
 protocol CardLayoutDelegate {
     var fractionToMove: Float { get }
     var cardState: CardState { get }
