@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 
 enum CardState {
-    case Expanded
+    case Expanded 
     case InTransit
     case Collapsed
 }
@@ -19,10 +19,7 @@ enum CardState {
 protocol CardLayoutDelegate {
     var fractionToMove: Float { get }
     var cardState: CardState { get }
-    var cardOffset: Float { get }
-    var cardHeight: Float { get }
-    var defaultCardsCollectionHeight:Float { get }
-    var expandedHeight:Float { get }
+    var configuration: Configuration { get }
 }
 
 class CardLayout: UICollectionViewLayout {
@@ -42,7 +39,7 @@ class CardLayout: UICollectionViewLayout {
     
     override func prepare() {
         cachedAttributes.removeAll()
-        contentHeight = delegate.cardState == .Expanded ? 0.0 : CGFloat(delegate.defaultCardsCollectionHeight + delegate.fractionToMove)
+        contentHeight = delegate.cardState == .Expanded ? CGFloat(delegate.configuration.expandedHeight) : CGFloat(delegate.configuration.collapsedHeight + delegate.fractionToMove)
         
         guard let numberOfItems = collectionView?.numberOfItems(inSection: 0) else {
             return
@@ -79,7 +76,6 @@ class CardLayout: UICollectionViewLayout {
         
         for attributes in cachedAttributes {
             if attributes.frame.intersects(rect) {
-//                layoutAttributes.append(attributes)
                 layoutAttributes.append(cachedAttributes[attributes.indexPath.item])
             }
 
@@ -100,22 +96,22 @@ class CardLayout: UICollectionViewLayout {
         var frameOrigin = frame.origin
         switch cardState {
         case .Expanded:
-            let val = (delegate.cardHeight * Float(index))
+            let val = (delegate.configuration.cardHeight * Float(index))
             frameOrigin.y = CGFloat(Float(8 * (index)) + val)
             
         case .InTransit:
             if index > 0 {
                 
-                let collapsedY = 8.0 + (delegate.cardOffset * Float(index))
-                let finalDistToMove = Swift.abs(((8.0 + delegate.cardHeight) * Float(index)) - collapsedY)
-                let fract = (finalDistToMove * translation)/(delegate.expandedHeight - delegate.defaultCardsCollectionHeight)
-                let val = CGFloat(8 + (delegate.cardOffset * Float(index)) + fract)
+                let collapsedY = 8.0 + (delegate.configuration.cardOffset * Float(index))
+                let finalDistToMove = Swift.abs(((8.0 + delegate.configuration.cardHeight) * Float(index)) - collapsedY)
+                let fract = (finalDistToMove * translation)/(delegate.configuration.expandedHeight - delegate.configuration.collapsedHeight)
+                let val = CGFloat(8 + (delegate.configuration.cardOffset * Float(index)) + fract)
                 frameOrigin.y = val
             }
             
         case .Collapsed:
             if index > 0 {
-                frameOrigin.y = CGFloat(8 + (delegate.cardOffset * Float(index)))
+                frameOrigin.y = CGFloat(8 + (delegate.configuration.cardOffset * Float(index)))
             }
         }
         frame.origin = frameOrigin

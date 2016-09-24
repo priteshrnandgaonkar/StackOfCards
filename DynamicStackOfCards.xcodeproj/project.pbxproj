@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		84074E871D96471B0096009F /* CardsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84074E861D96471B0096009F /* CardsManager.swift */; };
 		84B7CD591D8B241600AD45F6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84B7CD581D8B241600AD45F6 /* AppDelegate.swift */; };
 		84B7CD5B1D8B241600AD45F6 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84B7CD5A1D8B241600AD45F6 /* ViewController.swift */; };
 		84B7CD5E1D8B241600AD45F6 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 84B7CD5C1D8B241600AD45F6 /* Main.storyboard */; };
@@ -36,6 +37,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		84074E861D96471B0096009F /* CardsManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardsManager.swift; sourceTree = "<group>"; };
 		84B7CD551D8B241600AD45F6 /* DynamicStackOfCards.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DynamicStackOfCards.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		84B7CD581D8B241600AD45F6 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		84B7CD5A1D8B241600AD45F6 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -109,6 +111,7 @@
 				84B7CD641D8B241600AD45F6 /* Info.plist */,
 				84B7CD861D8B278300AD45F6 /* CardView.swift */,
 				84F31DCB1D8BE92D00CDC51D /* CardLayout.swift */,
+				84074E861D96471B0096009F /* CardsManager.swift */,
 			);
 			path = DynamicStackOfCards;
 			sourceTree = "<group>";
@@ -267,6 +270,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				84B7CD5B1D8B241600AD45F6 /* ViewController.swift in Sources */,
+				84074E871D96471B0096009F /* CardsManager.swift in Sources */,
 				84B7CD871D8B278300AD45F6 /* CardView.swift in Sources */,
 				84B7CD591D8B241600AD45F6 /* AppDelegate.swift in Sources */,
 				84F31DCC1D8BE92D00CDC51D /* CardLayout.swift in Sources */,
