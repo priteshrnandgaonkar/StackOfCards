@@ -19,6 +19,8 @@ class ViewController: UIViewController, CardLayoutDelegate {
     let downwardThreshold:Float = 50
     let upwardThreshold:Float = 50
     
+    var previousTranslation:CGFloat = 0
+    
     var panGesture: UIPanGestureRecognizer = UIPanGestureRecognizer()
     
     @IBOutlet weak var cardsCollectionView: UICollectionView!
@@ -54,10 +56,12 @@ class ViewController: UIViewController, CardLayoutDelegate {
         let translation = panGesture.translation(in: view)
         cardsCollectionView.collectionViewLayout.invalidateLayout()
         
+        let distanceMoved = translation.y //- previousTranslation
+        
         switch panGesture.state {
         case .changed:
 
-            cardsCollectionViewHeight.constant -= translation.y
+            cardsCollectionViewHeight.constant -= distanceMoved
             
             cardsCollectionViewHeight.constant = Swift.min(cardsCollectionViewHeight.constant, CGFloat(expandedHeight))
             cardsCollectionViewHeight.constant = Swift.max(cardsCollectionViewHeight.constant, CGFloat(defaultCardsCollectionHeight))
@@ -75,15 +79,32 @@ class ViewController: UIViewController, CardLayoutDelegate {
         case .cancelled:
             fallthrough
         case .ended:
-            if cardsCollectionViewHeight.constant > CGFloat(defaultCardsCollectionHeight + upwardThreshold) {
-                cardsCollectionViewHeight.constant = CGFloat(expandedHeight)
-                cardState = .Expanded
-                panGesture.isEnabled = false
+            print("Distance Moved \(previousTranslation)")
+            if previousTranslation < 0 {
+                if cardsCollectionViewHeight.constant > CGFloat(defaultCardsCollectionHeight + upwardThreshold) {
+                    cardsCollectionViewHeight.constant = CGFloat(expandedHeight)
+                    cardState = .Expanded
+                    panGesture.isEnabled = false
+                }
+                else {
+                    cardsCollectionViewHeight.constant = CGFloat(defaultCardsCollectionHeight)
+                    cardState = .Collapsed
+                    panGesture.isEnabled = true
+                }
             }
             else {
-                cardsCollectionViewHeight.constant = CGFloat(defaultCardsCollectionHeight)
-                cardState = .Collapsed
-                panGesture.isEnabled = true
+                if cardsCollectionViewHeight.constant < CGFloat(expandedHeight - downwardThreshold) {
+                    cardsCollectionViewHeight.constant = CGFloat(defaultCardsCollectionHeight)
+                    cardState = .Collapsed
+                    panGesture.isEnabled = true
+                }
+                else {
+                    
+                    cardsCollectionViewHeight.constant = CGFloat(expandedHeight)
+                    cardState = .Expanded
+                    panGesture.isEnabled = false
+                }
+
             }
             cardsCollectionView.isScrollEnabled = !panGesture.isEnabled
 
@@ -96,7 +117,7 @@ class ViewController: UIViewController, CardLayoutDelegate {
             break
         }
         
-
+        previousTranslation = translation.y
         panGesture.setTranslation(CGPoint.zero, in: view)
     }
 }
